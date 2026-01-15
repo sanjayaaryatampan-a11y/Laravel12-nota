@@ -11,6 +11,17 @@ use App\Http\Resources\InvoiceResource;
 
 class InvoiceController extends Controller
 {
+    public function index()
+    {
+        $data = Invoice::with('item')->get();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Data invoice',
+            'data' => InvoiceResource::collection($data)
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -21,9 +32,9 @@ class InvoiceController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status'  => false,
+                'status' => false,
                 'message' => 'Validasi gagal',
-                'errors'  => $validator->errors()
+                'data' => $validator->errors()
             ], 422);
         }
 
@@ -35,10 +46,10 @@ class InvoiceController extends Controller
             'tanggal' => $request->tanggal,
         ]);
 
-        return (new InvoiceResource($invoice))
-            ->additional([
-                'status'  => true,
-                'message' => 'Invoice berhasil disimpan'
-            ]);
+        return response()->json([
+            'status' => true,
+            'message' => 'Invoice berhasil ditambahkan',
+            'data' => new InvoiceResource($invoice->load('item'))
+        ]);
     }
 }

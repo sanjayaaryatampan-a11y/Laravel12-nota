@@ -3,19 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Invoice extends Model
 {
-    use HasFactory;
-    protected $fillable = [
-        'no_nota',
-        'tanggal',
-        'total_harga',
-    ];
+    protected $fillable = ['item_id', 'jumlah', 'tanggal'];
 
-    public function items()
+    public function item()
     {
-        return $this->belongsToMany(Item::class, 'invoice_items')->withPivot('jumlah', 'total_harga');
+        return $this->belongsTo(Item::class);
     }
 }
